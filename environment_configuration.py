@@ -48,7 +48,7 @@ modeling_path = '../output/models'
 dash_data_path = '/data'
 
 # define data paths
-reviews_ind_path = '/reviews_meta_combined_individual.pkl'
+reviews_ind_path = '/review_meta_data_camera_ind.pkl'
 reviews_agg_path = '/reviews_meta_combined_aggregated.pkl'
 products_path = '/product_metadata_no_one_hot_encoding.pkl'
 
