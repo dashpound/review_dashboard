@@ -31,7 +31,7 @@ print('Script: 01.00.02 [Import Packages] completed')
 owd = os.getcwd()
 
 # Get out of the dash folder
-os.chdir("..")
+#os.chdir("..")
 
 # Set that as the working directory variable
 working_directory = os.getcwd()
@@ -43,9 +43,9 @@ working_directory = working_directory.replace('\\', '/')
 os.chdir(owd)
 
 # other file paths
-data_path = '/data/pickles/enhanced'
+data_path = '/data/input_data'
 modeling_path = '../output/models'
-dash_data_path = '/dash/data'
+dash_data_path = '/data'
 
 # define data paths
 reviews_ind_path = '/reviews_meta_combined_individual.pkl'

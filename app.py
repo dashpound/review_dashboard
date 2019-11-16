@@ -88,18 +88,18 @@ gc.collect()
 with open(Path(working_directory + data_path + products_path), 'rb')  as pickle_file:
     product_data = pickle.load(pickle_file)
     product_data = pd.DataFrame(product_data)
-    
+
 gc.collect()
 
 # Load sample mapped product data
-sample_mapped_product = pd.read_excel(Path(working_directory + dash_data_path + '/Sample_Mapped_Product_Data.xlsx'))
+sample_mapped_product = pd.read_csv(Path(working_directory + dash_data_path + '/Sample_Mapped_Product_Data.csv'))
 
 sample_mapped_product['Mapped Product']=sample_mapped_product['Mapped Product'].astype(str)
 sample_mapped_product['Product Code']=sample_mapped_product['Product Code'].astype(str)
 sample_mapped_product['Product Name'] = sample_mapped_product['Product Name'].str[:60] # only showing first 60 chars
 
 #Load sample mapped reviewer data
-sample_mapped_reviewer = pd.read_excel(Path(working_directory + dash_data_path + '/Sample_Mapped_Reviewer_Data.xlsx'))
+sample_mapped_reviewer = pd.read_csv(Path(working_directory + dash_data_path + '/Sample_Mapped_Reviewer_Data.csv'))
 
 sample_mapped_reviewer['Product Name'] = sample_mapped_reviewer['Product Name'].str[:60] # only showing first 60 chars
 sample_mapped_reviewer['Product Code']=sample_mapped_reviewer['Product Code'].astype(str)
