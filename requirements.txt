@@ -19,8 +19,6 @@ chardet==3.0.4
 Click==7.0
 cloudpickle==0.8.1
 colorama==0.4.1
-conda==4.7.12
-conda-package-handling==1.6.0
 constantly==15.1.0
 cryptography==2.6.1
 cssselect==1.0.3
