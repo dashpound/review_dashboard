@@ -6,9 +6,11 @@ Amazon has a subset of customers who write reviews about their purchased product
 
 Disclaimer: This project was completed as part of the MSDS 498 Capstone Project course within the Northwestern University. All data, dashboards, and insights used throughout this project are completely simulated and not in any way connected to or a reﬂection of Amazon. Please do not duplicate or distribute outside of the context of this course. 
 
-## Getting Started
+## Codebase
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+This is the codebase for the dashboard.
+The codebase for the recommendation engine is located here:
+[https://github.com/dashpound/capstone](https://github.com/dashpound/capstone)
 
 
 ### Prerequisites
