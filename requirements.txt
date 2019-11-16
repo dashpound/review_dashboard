@@ -64,12 +64,9 @@ Markdown==3.0.1
 MarkupSafe==1.1.1
 matplotlib==3.1.1
 mccabe==0.6.1
-menuinst==1.4.16
 mistune==0.8.4
 mock==3.0.5
 more-itertools==7.0.0
-nbconvert==5.5.0
-nbformat==4.4.0
 numpy==1.15.4
 numpydoc==0.9.1
 opt-einsum==3.1.0
