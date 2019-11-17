@@ -2,15 +2,15 @@
 # 02.00.01 | Dashboard App | Documentation
 # ===============================================================================
 # Name:               02_app
-# Author:             Rodd
-# Last Edited Date:   11/16/19
+# Author:             Rodd/Patel
+# Last Edited Date:   11/17/19
 # Description:        Loads packages, loads and summarizes data, and defines dash components.
 #  
 #                   
 # Notes:              Must install dash outside of this script.
 #                        pip install dash==1.4.1  # The core dash backend
 #                        pip install dash-daq==0.2.1  # DAQ components (newly open-sourced!)
-#                    During development, debug=True so can test changes real-time.
+#                    Dash code is finnicky on formatting and placement. There is some code that could be made into a function but dash does not like calling a function.
 #                     
 #
 # Warnings:           Cannot filter the reviews aggregated data to Camera & Photo.
@@ -18,7 +18,6 @@
 #
 # Outline:            Import packages.
 #                     Load data.
-#                     Create summary data frames.
 #                     Define dash layout.
 #                     Define dash reactive components.
 #                     Run dash.
@@ -32,11 +31,12 @@ import pandas as pd
 import pickle
 from pathlib import Path
 import gc
+from math import trunc
 
 # Import modules (other scripts)
 from environment_configuration import working_directory, data_path, dash_data_path
-from environment_configuration import reviews_ind_path, reviews_agg_path, products_path, top_10_products_path
-from environment_configuration import PAGE_SIZE, operators, split_filter_part
+from environment_configuration import reviews_ind_path, reviews_agg_path, products_path
+from environment_configuration import colors, PAGE_SIZE, operators, split_filter_part
 
 # Dash packages
 import dash
@@ -51,6 +51,8 @@ from dash.dependencies import Input, Output
 # Dash data table
 import dash_table
 import dash_html_components as html
+import dash_table_experiments
+
 
 # =============================================================================
 # 02.01.01| Import Data
@@ -68,13 +70,13 @@ top_10_products = pd.read_pickle(Path(working_directory + dash_data_path + top_1
 # 02.02.01| Filter Data
 # =============================================================================
 # product data
-sample_mapped_product['Mapped Product']=sample_mapped_product['Mapped Product'].astype(str)
-sample_mapped_product['Product Code']=sample_mapped_product['Product Code'].astype(str)
+sample_mapped_product['Mapped Product'] = sample_mapped_product['Mapped Product'].astype(str)
+sample_mapped_product['Product Code'] = sample_mapped_product['Product Code'].astype(str)
 sample_mapped_product['Product Name'] = sample_mapped_product['Product Name'].str[:60] # only showing first 60 chars
 
 # reviewer data
 sample_mapped_reviewer['Product Name'] = sample_mapped_reviewer['Product Name'].str[:60] # only showing first 60 chars
-sample_mapped_reviewer['Product Code']=sample_mapped_reviewer['Product Code'].astype(str)
+sample_mapped_reviewer['Product Code'] = sample_mapped_reviewer['Product Code'].astype(str)
 
 
 # =============================================================================
@@ -82,34 +84,39 @@ sample_mapped_reviewer['Product Code']=sample_mapped_reviewer['Product Code'].as
 # =============================================================================
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 server = app.server
 
-# colors are in spirit of Amazon color palette
-colors = {#'background': '#000000',
-          'background': '#FFFFFF',
-          'text': '#FF9900',
-          'subtext': '#fbffae',
-          'color1': '#146eb4',
-          'color2': '#232f3e'}
-
-app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
+app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=[
         
         # CognoClick Logo
-        html.Div(children=[html.Img(src=app.get_asset_url("../assets/CognoClick_upscaled_logo.jpg"),
-                       id="cognoclick-logo",
-                       style={'height':'35px', 
-                              'width':'auto', 
-                              'margin-top':'10px',
-                              'margin-left':'10px'})]), 
+        html.Div([dbc.Row([
+                dbc.Col(html.Div(children=[html.Img(src=app.get_asset_url("../assets/CognoClick_upscaled_logo.jpg"),
+                                                    id="cognoclick-logo",
+                                                    style={'height':'35px', 
+                                                           'width':'auto', 
+                                                           'margin-top':'10px',
+                                                           'margin-left':'10px'})])), 
 
         # Title
-        html.H1(children='Amazon Recommendation Engine',
-                style={'textAlign': 'center',
-                       'height': '20px',
-                       'margin-bottom': '40px',
-                       'color': colors['text']}),
+                dbc.Col(html.H1(children='Amazon Recommendation Engine',
+                                style={'textAlign': 'center',
+                                       'font-family':'Arial',
+#                                       'height': '20px',
+#                                       'margin-bottom': '40px',
+                                       'color': colors['gray_col']})),
+    
+        # Amazon Logo
+                dbc.Col(html.Div(children=[html.Img(src=app.get_asset_url("../assets/Amazon_Logo.png"),
+                                                    id="amazon-logo",
+                                                    style={'background':colors['white_col'],
+                                                           'height':'32px', 
+                                                           'width':'auto', 
+                                                           'margin-top':'10px',
+                                                           'display': 'inline-block',
+                                                           'margin-left':'290px',
+                                                           'margin-right': '10px'})]))])]),
     
         # Top 10 Products Bar Chart
         dcc.Graph(
@@ -118,102 +125,99 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
                 'data': [go.Bar(y=top_10_products['title'],
                                 x=top_10_products['numberReviews'], 
                                 orientation='h',
-                                marker_color=colors['color1'])],   
+                                marker_color=colors['orange_col'],
+                                # adding custom hover info to bar plot
+                                # had to search high and low to discover that this formatting works properly
+                                # <br> is used to create new lines
+                                text=['<b>Number of Reviews: </b>'+'{}'.format(trunc(numberReviews))+ # need this to be integer format
+                                      '<br><b>Price: </b>'+'${:.2f}'.format(price_t)+
+                                      '<br><b>Category 2: </b>'+'{}'.format(category2_t)+
+                                      '<br><b>Category 3: </b>'+'{}'.format(category3_t)
+                                      for numberReviews, price_t, category2_t, category3_t in 
+                                               zip(list(top_10_products['numberReviews']),
+                                               list(top_10_products['price_t']), 
+                                               list(top_10_products['category2_t']),
+                                               list(top_10_products['category3_t']))],
+                                hoverinfo="text",
+                                hoverlabel_align = 'left'
+                                )],
                 'layout': {'title': 'Top 10 Products Overall',
+                           'plot_bgcolor': colors['white_col'],
+                           'paper_bgcolor': colors['white_col'],
+                           'font': {'color': colors['black_col']},
                            # titles are long so need to add a hefty left margin
-                           'margin': {'l':500, 'pad':4}}}), 
-                           #'margin': go.layout.Margin(l=500,pad=4)
+                           'margin': {'l':500, 'pad':4}}}),
                           
         # Creating tabs to use to add in the recommendation components
-       html.Div([dcc.Tabs(id="tabs", children=[
-                dcc.Tab(label='Product Recommendations', children=[
+        html.Div([dcc.Tabs(id="tabs", 
+                           colors={'border': colors['black_col'],
+                                   'primary': colors['orange_col'],
+                                   'background': "cornsilk"},
+                           children=[
                 # Product Recommendation Tab
+                dcc.Tab(label='Product Recommendations', children=[
                 dash_table.DataTable(
-                            id='product-table',
-                            columns=[{"name": i, "id": i} for i in sample_mapped_product.columns],
-                            page_current=0,
-                            page_size=PAGE_SIZE,
-                            page_action='custom',
-                        
-                            filter_action='custom',
-                            filter_query='' ,
-                            style_cell={'padding': '5px'},
-                            style_cell_conditional=[
-                                {
-                                    'if': {'column_id': c},
-                                    'textAlign': 'left'
-                                } for c in ['Product Name']
-                            ],
-                            style_header={
-                                'backgroundColor': 'white',
-                                'fontWeight': 'bold'
-                            },
-                            style_data_conditional=[
-                                {
-                                    'if': {'row_index': 'odd'},
-                                    'backgroundColor': 'rgb(248, 248, 248)'
-                                }
-                            ],        
-                        ),
+                        id='product-table',
+                        columns=[{"name": i, "id": i} for i in sample_mapped_product.columns],
+                        page_current=0,
+                        page_size=PAGE_SIZE,
+                        page_action='custom',
+                        filter_action='custom',
+                        filter_query='' ,
+                        style_cell={'padding':'5px',
+                                    'fontSize':11,
+                                    'textAlign': 'left'},
+                        style_header={'backgroundColor': colors['d_blue_col'],
+                                      'color': colors['white_col'],
+                                      'fontSize':13,
+                                      'fontWeight': 'bold'},
+                        style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': colors['lgray_col']}
+        ]),
+                # To add a new line, just add two spaces at the end of a sentence.
+                # Cheating to get rid of dark background color at the end of text by adding a pad.
                 dcc.Markdown('''
-                             ###### Each column can be filtered based on user input.
-                             
-                             ###### For string columns, just enter a partial string such as "Nook."
-                             
-                             ###### Exception: For product columns, use quotes around filter, such as "328."
-                             
-                             ###### For numeric columns, filters such as "=5" or ">=200" are valid filters.
-                             
-                             ###### Use "Enter" to initiate and remove filters.
-                             
-                             ''')  ]),
+                             ###### Directions
+                             Each column can be filtered based on user input.  
+                             For string columns, just enter a partial string such as "Nook."  
+                             Exception: For product columns, use quotes around filter, such as "328."  
+                             For numeric columns, filters such as "=5" or ">=200" are valid filters.  
+                             Use "Enter" to initiate and remove filters.  ''',
+                             style={'backgroundColor': colors['white_col'],
+                                    'fontSize':11,
+                                    'padding':'10px'})]),
     
           # User Recommendation Tab
-          dcc.Tab(label='User Recommendations', children=[
-                
-                # User Table
+                dcc.Tab(label='User Recommendations', children=[
                 dash_table.DataTable(
                         id='user-table',
                         columns=[{"name": i, "id": i} for i in sample_mapped_reviewer.columns],
                         page_current=0,
                         page_size=PAGE_SIZE,
                         page_action='custom',
-                    
                         filter_action='custom',
                         filter_query='' ,
-                        style_cell={'padding': '5px'},
-                        style_cell_conditional=[
-                            {
-                                'if': {'column_id': c},
-                                'textAlign': 'left'
-                            } for c in ['Product Name']
-                        ],
-                        style_header={
-                            'backgroundColor': 'white',
-                            'fontWeight': 'bold'
-                        },
-                        style_data_conditional=[
-                            {
-                                'if': {'row_index': 'odd'},
-                                'backgroundColor': 'rgb(248, 248, 248)'
-                            }
-                        ]),
-                
+                        style_cell={'padding':'5px',
+                                    'fontSize':11,
+                                    'textAlign': 'left'},
+                        style_header={'backgroundColor': colors['d_blue_col'],
+                                      'color': colors['white_col'],
+                                      'fontSize':13,
+                                      'fontWeight': 'bold'},
+                        style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': colors['lgray_col']}]),
+                # To add a new line, just add two spaces at the end of a sentence.
+                # Cheating to get rid of dark background color at the end of text by adding a pad.
                 dcc.Markdown('''
-                             ###### Each column can be filtered based on user input.
-                             
-                             ###### For string columns, just enter a partial string such as "Nook."
-                             
-                             ###### Exception: For product columns, use quotes around filter, such as "328."
-                             
-                             ###### For numeric columns, filters such as "=5" or ">=200" are valid filters.
-                             
-                             ###### Use "Enter" to initiate and remove filters.
-                             
-                             ''')])
-        ])])
+                             ###### Directions
+                             Each column can be filtered based on user input.  
+                             For string columns, just enter a partial string such as "Nook."  
+                             Exception: For product columns, use quotes around filter, such as "328."  
+                             For numeric columns, filters such as "=5" or ">=200" are valid filters.  
+                             Use "Enter" to initiate and remove filters.  ''',
+                             style={'backgroundColor': colors['white_col'],
+                                    'fontSize':11,
+                                    'padding':'10px'})]),
+        ])])])
     
-  ])
     
 # =============================================================================
 # 02.04.01| Dash Reactive Components | Product Table
