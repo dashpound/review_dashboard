@@ -35,7 +35,7 @@ from math import trunc
 
 # Import modules (other scripts)
 from environment_configuration import working_directory, data_path, dash_data_path
-from environment_configuration import reviews_ind_path, reviews_agg_path, products_path
+from environment_configuration import reviews_ind_path, reviews_agg_path, products_path, top_10_products_path
 from environment_configuration import colors, PAGE_SIZE, operators, split_filter_part
 
 # Dash packages
@@ -215,6 +215,10 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
                              style={'backgroundColor': colors['white_col'],
                                     'fontSize':11,
                                     'padding':'10px'})]),
+        dcc.Markdown('''
+                     Disclaimer: This project was completed as part of the MSDS 498 Capstone Project course within the Northwestern University.  
+                     This dashboard and data are completely simulated and not in any way connected to or a reﬂection of Amazon.  
+                     Please do not duplicate or distribute outside of the context of this course.''')
         ])])])
     
     
