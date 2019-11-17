@@ -51,7 +51,6 @@ from dash.dependencies import Input, Output
 # Dash data table
 import dash_table
 import dash_html_components as html
-import dash_table_experiments
 
 
 # =============================================================================
