@@ -87,8 +87,8 @@ product_data_sub['title'] = product_data_sub['title'].str[:60]
 # 01.04.01| Define Summary Data Frames
 # =============================================================================
 # top 10 products
-top_10_products = product_data_sub.sort_values('numberReviews', ascending=False).head(10)[['title','numberReviews']]
-top_10_products = top_10_products.sort_values('numberReviews', ascending=True)
+top_10_products = product_data_sub.sort_values('numberReviews', ascending=False).head(10)[['title','numberReviews','price_t','category2_t','category3_t']]
+top_10_products = top_10_products.sort_values('numberReviews', ascending=True) 
 
 # =============================================================================
 # 01.05.01| Pickle Results
