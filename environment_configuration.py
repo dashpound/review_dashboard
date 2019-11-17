@@ -51,6 +51,7 @@ dash_data_path = '/data'
 reviews_ind_path = '/review_meta_data_camera_ind.pkl'
 reviews_agg_path = '/reviews_meta_combined_aggregated.pkl'
 products_path = '/product_metadata_no_one_hot_encoding.pkl'
+top_10_products_path = '/top_10_products.pkl'
 
 print('Script: 01.01.01 [Set working directory and other paths] completed')
 
