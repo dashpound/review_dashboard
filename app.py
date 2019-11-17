@@ -217,11 +217,9 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
                                     'padding':'10px'})]),
         ])]),
         dcc.Markdown('''
-                     Disclaimer: This project was completed as part of the MSDS 498 Capstone Project course within the Northwestern University.  
-                     This dashboard and data are completely simulated and not in any way connected to or a reﬂection of Amazon.  
-                     Please do not duplicate or distribute outside of the context of this course.''',
+                     **Disclaimer**: This project was completed as part of the MSDS 498 Capstone Project course within the Northwestern University. This dashboard and data are completely simulated and not in any way connected to or a reﬂection of Amazon. Please do not duplicate or distribute outside of the context of this course.''',
                      style={'backgroundColor': colors['white_col'],
-                                    'fontSize':11,
+                                    'fontSize':8,
                                     'padding':'10px'})
     ])
     
