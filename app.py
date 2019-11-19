@@ -113,9 +113,9 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
                                                            'height':'32px', 
                                                            'width':'auto', 
                                                            'margin-top':'10px',
-                                                           'margin-left':'40px',
+                                                           'margin-left':'20px',
                                                            'margin-right':'10px',
-                                                           'margin-bottom':'10px',
+                                                           'margin-bottom':'10px'
                                                            })]), width=3,lg=2)],align="center")]),
     
         # Top 10 Products Bar Chart
