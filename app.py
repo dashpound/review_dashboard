@@ -96,14 +96,14 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
                                                     style={'height':'35px', 
                                                            'width':'auto', 
                                                            'margin-top':'10px',
-                                                           'margin-left':'10px'})])), 
+                                                           'margin-bottom':'10px',
+                                                           'margin-left':'10px'})]),width=3,lg=3), 
 
         # Title
                 dbc.Col(html.H1(children='Amazon Recommendation Engine',
                                 style={'textAlign': 'center',
                                        'font-family':'Arial',
-                                       'fontSize':32,
-#                                       'fontWeight': 'bold',
+                                       'fontSize':36,
                                        'color': colors['gray_col']})),
     
         # Amazon Logo
@@ -113,10 +113,10 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
                                                            'height':'32px', 
                                                            'width':'auto', 
                                                            'margin-top':'10px',
-#                                                           'display': 'inline-block',
-                                                           'margin-left':'290px',
-#                                                           'margin-right': '10px'
-                                                           })]))])]),
+                                                           'margin-left':'40px',
+                                                           'margin-right':'10px',
+                                                           'margin-bottom':'10px',
+                                                           })]), width=3,lg=2)],align="center")]),
     
         # Top 10 Products Bar Chart
         dcc.Graph(
@@ -169,7 +169,6 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
                                     'font-family':'Arial',
                                     'fontSize':11,
                                     'textAlign': 'left',
-                                    'height': 'auto',
                                     'minWidth': '0px', 'maxWidth': '180px',
                                     'whiteSpace': 'normal'},
                         style_header={'backgroundColor': colors['d_blue_col'],
@@ -206,7 +205,6 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
                                     'font-family':'Arial',
                                     'fontSize':11,
                                     'textAlign': 'left',
-                                    'height': 'auto',
                                     'minWidth': '0px', 'maxWidth': '180px',
                                     'whiteSpace': 'normal'},
                         style_header={'backgroundColor': colors['d_blue_col'],
@@ -302,4 +300,4 @@ def update_table2(page_current,page_size, filter):
 # 02.06.01| Run Dash
 # =============================================================================                               
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
