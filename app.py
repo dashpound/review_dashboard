@@ -3,7 +3,7 @@
 # ===============================================================================
 # Name:               02_app
 # Author:             Rodd/Patel
-# Last Edited Date:   11/17/19
+# Last Edited Date:   11/19/19
 # Description:        Loads packages, loads and summarizes data, and defines dash components.
 #  
 #                   
@@ -13,13 +13,15 @@
 #                    Dash code is finnicky on formatting and placement. There is some code that could be made into a function but dash does not like calling a function.
 #                     
 #
-# Warnings:           Cannot filter the reviews aggregated data to Camera & Photo.
+# Warnings:           
 #
 #
 # Outline:            Import packages.
-#                     Load data.
-#                     Define dash layout.
-#                     Define dash reactive components.
+#                     Load pickles.
+#                     Define dash layout for header (logos and title).
+#                     Define dash layout for top 10 products visual.
+#                     Define dash layout for product and user tabs.
+#                     Define dash reactive components for product and user tabs.
 #                     Run dash.
 #
 #
