@@ -3,21 +3,24 @@
 # ===============================================================================
 # Name:               01_data_configuration
 # Author:             Rodd
-# Last Edited Date:   11/16/19
-# Description:        
+# Last Edited Date:   11/19/19
+# Description:        Creates relevant pickles to feed into dash app.
 #  
 #                   
-# Notes:              
+# Notes:             Had to get pickles from Brian from capstone repo to run this file. 
 #                     
 #
 # Warnings:           
 #
 #
-# Outline:         
-# TO DO: 
-#       Get URL variable and potentially images from raw data.
-#       Get prediction sets.
-#       Clarify user metadata with Hemant - # of reviews & ratings are at a user or product level?   
+# Outline:           Load packages.
+#                    Import data to prepare.
+#                    Select needed columns from the product data frame and truncate title to first 60 chars.
+#                    Manipulate product recommendations data to create columns for dashboard.
+#                    Create rank order variable for product recommendations and reorder data.
+#                    Save recommendations via pickle.
+#                    Repeat steps above for user recommendations.
+#                    Create top 10 products data frame and pickle it.    
 #
 #
 # =============================================================================
@@ -114,13 +117,6 @@ product_recs_enhanced.rename(columns={'category2_t':'Product Category 2',
                                       'numberReviews':'Number of Reviews',
                                       'meanStarRating':'Average Rating'}, inplace=True)
 
-# reorder columns
-product_recs_enhanced = product_recs_enhanced[['Original Product Id','Original Product',
-                                               'Predicted Rating','Recommended Product',
-                                               'Product Category 2','Product Category 3',
-                                               'Price','Number of Reviews',
-                                               'Average Rating','Product URL']]
-
 print('Script: 01.03.01 [Add relevant metadata to product predictions] completed')
 
 
@@ -129,7 +125,17 @@ print('Script: 01.03.01 [Add relevant metadata to product predictions] completed
 # =============================================================================
 product_recs_enhanced["Rank Order"] = product_recs_enhanced.groupby('Original Product Id')["Predicted Rating"].rank("dense", ascending=False)
 
+# have to sort values so thank rank 1 is first for each product
+product_recs_enhanced = product_recs_enhanced.sort_values(by=['Original Product Id','Rank Order'], ascending=True)
+
 product_recs_enhanced = product_recs_enhanced.drop('Predicted Rating', axis=1)
+
+# reorder columns
+product_recs_enhanced = product_recs_enhanced[['Original Product Id','Original Product',
+                                               'Rank Order','Recommended Product',
+                                               'Product Category 2','Product Category 3',
+                                               'Price','Number of Reviews',
+                                               'Average Rating','Product URL']]
 
 print('Script: 01.03.02 [Transform rank order column] completed')
 
@@ -163,13 +169,6 @@ columns_to_remove = ['original_reviewerID_int','recommended_product_id_int',
                      'asin','recommended_product_id']
 user_recs_enhanced = user_recs_enhanced.drop(columns_to_remove, axis=1)
 
-# reorder columns
-user_recs_enhanced = user_recs_enhanced[['Reviewer Id',
-                                         'Predicted Rating','Recommended Product',
-                                         'Product Category 2','Product Category 3',
-                                         'Price','Number of Reviews',
-                                         'Average Rating','Product URL']]
-
 # verify no rows were lost
 if(user_recs_enhanced.shape[0]==user_recs.shape[0] is False):
     sys.exit("User recommendation data prep lost data")
@@ -182,7 +181,17 @@ print('Script: 01.04.01 [Add relevant metadata to user predictions] completed')
 # =============================================================================
 user_recs_enhanced["Rank Order"] = user_recs_enhanced.groupby('Reviewer Id')["Predicted Rating"].rank("dense", ascending=False)
 
+# have to sort values so thank rank 1 is first for each reviewer
+user_recs_enhanced = user_recs_enhanced.sort_values(by=['Reviewer Id','Rank Order'], ascending=True)
+
 user_recs_enhanced = user_recs_enhanced.drop('Predicted Rating', axis=1)
+
+# reorder columns
+user_recs_enhanced = user_recs_enhanced[['Reviewer Id',
+                                         'Rank Order','Recommended Product',
+                                         'Product Category 2','Product Category 3',
+                                         'Price','Number of Reviews',
+                                         'Average Rating','Product URL']]
 
 print('Script: 01.04.02 [Transform rank order column] completed')
 
