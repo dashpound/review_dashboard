@@ -28,14 +28,12 @@
 # =============================================================================
 # Import packages
 import pandas as pd
-import pickle
 from pathlib import Path
-import gc
 from math import trunc
 
 # Import modules (other scripts)
-from environment_configuration import working_directory, data_path, dash_data_path
-from environment_configuration import reviews_ind_path, reviews_agg_path, products_path, top_10_products_path
+from environment_configuration import working_directory, dash_data_path
+from environment_configuration import product_recs_path, user_recs_path, top_10_products_path
 from environment_configuration import colors, PAGE_SIZE, operators, split_filter_part
 
 # Dash packages
@@ -43,40 +41,35 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
-import plotly.express as px
 import dash_bootstrap_components as dbc
-import dash_table as dt
 from dash.dependencies import Input, Output
 
 # Dash data table
 import dash_table
-import dash_html_components as html
 
 
 # =============================================================================
 # 02.01.01| Import Data
 # =============================================================================
-# Load sample mapped product data
-sample_mapped_product = pd.read_csv(Path(working_directory + dash_data_path + '/Sample_Mapped_Product_Data.csv'))
+# Load product recommendations
+product_recs = pd.read_pickle(Path(working_directory + dash_data_path + product_recs_path))
 
-# Load sample mapped reviewer data
-sample_mapped_reviewer = pd.read_csv(Path(working_directory + dash_data_path + '/Sample_Mapped_Reviewer_Data.csv'))
+# Load user recommendations
+user_recs = pd.read_pickle(Path(working_directory + dash_data_path + user_recs_path))
 
 # Load top 10 producs
 top_10_products = pd.read_pickle(Path(working_directory + dash_data_path + top_10_products_path))
 
-# =============================================================================
-# 02.02.01| Filter Data
-# =============================================================================
-# product data
-sample_mapped_product['Mapped Product'] = sample_mapped_product['Mapped Product'].astype(str)
-sample_mapped_product['Product Code'] = sample_mapped_product['Product Code'].astype(str)
-sample_mapped_product['Product Name'] = sample_mapped_product['Product Name'].str[:60] # only showing first 60 chars
-
-# reviewer data
-sample_mapped_reviewer['Product Name'] = sample_mapped_reviewer['Product Name'].str[:60] # only showing first 60 chars
-sample_mapped_reviewer['Product Code'] = sample_mapped_reviewer['Product Code'].astype(str)
-
+## =============================================================================
+## 02.02.01| Filter Data
+## =============================================================================
+## product data
+#sample_mapped_product['Mapped Product'] = sample_mapped_product['Mapped Product'].astype(str)
+#sample_mapped_product['Product Code'] = sample_mapped_product['Product Code'].astype(str)
+#
+## reviewer data
+#sample_mapped_reviewer['Product Code'] = sample_mapped_reviewer['Product Code'].astype(str)
+#
 
 # =============================================================================
 # 02.03.01| Dash Layout
@@ -89,8 +82,9 @@ server = app.server
 
 app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=[
         
-        # CognoClick Logo
+        
         html.Div([dbc.Row([
+        # CognoClick Logo
                 dbc.Col(html.Div(children=[html.Img(src=app.get_asset_url("../assets/CognoClick_upscaled_logo.jpg"),
                                                     id="cognoclick-logo",
                                                     style={'height':'35px', 
@@ -118,6 +112,7 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
                                                            'margin-bottom':'10px'
                                                            })]), width=3,lg=2)],align="center")]),
     
+
         # Top 10 Products Bar Chart
         dcc.Graph(
             id='top-10-graph',
@@ -148,17 +143,18 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
                            # titles are long so need to add a hefty left margin
                            'margin': {'l':500, 'pad':4}}}),
                           
+
         # Creating tabs to use to add in the recommendation components
         html.Div([dcc.Tabs(id="tabs", 
                            colors={'border': colors['black_col'],
                                    'primary': colors['orange_col'],
                                    'background': "cornsilk"},
                            children=[
-                # Product Recommendation Tab
+        # Product Recommendation Tab
                 dcc.Tab(label='Product Recommendations', children=[
                 dash_table.DataTable(
                         id='product-table',
-                        columns=[{"name": i, "id": i} for i in sample_mapped_product.columns],
+                        columns=[{"name": i, "id": i} for i in product_recs.columns],
                         page_current=0,
                         page_size=PAGE_SIZE,
                         page_action='custom',
@@ -194,7 +190,7 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
                 dcc.Tab(label='User Recommendations', children=[
                 dash_table.DataTable(
                         id='user-table',
-                        columns=[{"name": i, "id": i} for i in sample_mapped_reviewer.columns],
+                        columns=[{"name": i, "id": i} for i in user_recs.columns],
                         page_current=0,
                         page_size=PAGE_SIZE,
                         page_action='custom',
@@ -224,7 +220,9 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
                              style={'backgroundColor': colors['white_col'],
                                     'fontSize':11,
                                     'padding':'10px'})]),
-        ])]),
+        ])]), # ends tabs
+                        
+        # Disclaimer at the bottom         
         dcc.Markdown('''
                      **Disclaimer**: This project was completed as part of the MSDS 498 Capstone Project course within the Northwestern University. This dashboard and data are completely simulated and not in any way connected to or a reﬂection of Amazon. Please do not duplicate or distribute outside of the context of this course.''',
                      style={'backgroundColor': colors['white_col'],
@@ -246,7 +244,7 @@ app.layout = html.Div(style={'backgroundColor': colors['d_blue_col']}, children=
 def update_table(page_current,page_size, filter):
     print(filter)
     filtering_expressions = filter.split(' && ')
-    dff = sample_mapped_product # WILL NEED TO CHANGE THIS
+    dff = product_recs
     for filter_part in filtering_expressions:
         col_name, operator, filter_value = split_filter_part(filter_part)
 
@@ -277,7 +275,7 @@ def update_table(page_current,page_size, filter):
 def update_table2(page_current,page_size, filter):
     print(filter)
     filtering_expressions = filter.split(' && ')
-    dff = sample_mapped_reviewer # WILL NEED TO CHANGE THIS
+    dff = user_recs
     for filter_part in filtering_expressions:
         col_name, operator, filter_value = split_filter_part(filter_part)
 
@@ -297,7 +295,7 @@ def update_table2(page_current,page_size, filter):
     
     
 # =============================================================================
-# 02.06.01| Run Dash
+# 02.05.01| Run Dash
 # =============================================================================                               
 if __name__ == '__main__':
     app.run_server(debug=True)
