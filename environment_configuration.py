@@ -16,8 +16,6 @@
 # =============================================================================
 # 01.00.02 | Import Packages
 # =============================================================================
-import seaborn as sns
-import matplotlib.pyplot as plt
 import os
 
 print('Script: 01.00.02 [Import Packages] completed')
@@ -48,10 +46,12 @@ modeling_path = '../output/models'
 dash_data_path = '/data'
 
 # define data paths
-reviews_ind_path = '/review_meta_data_camera_ind.pkl'
-reviews_agg_path = '/reviews_meta_combined_aggregated.pkl'
-products_path = '/product_metadata_no_one_hot_encoding.pkl'
+products_path = '/product_metadata_dashboard.pkl'
 top_10_products_path = '/top_10_products.pkl'
+#product_recs_orig_path = 
+#user_recs_orig_path = 
+product_recs_path = '/product_recommendations.pkl'
+user_recs_path = '/user_recommendations.pkl'
 
 print('Script: 01.01.01 [Set working directory and other paths] completed')
 
@@ -70,7 +70,7 @@ colors = {'black_col': '#000000',     # Black
           'd_blue_col': '#232f3e'}    # Very dark desaturated blue
           
 # defining length of tables
-PAGE_SIZE = 11
+PAGE_SIZE = 10
 
 # used for controlling filtering of tables
 operators = [['ge ', '>='],
