@@ -48,8 +48,8 @@ dash_data_path = '/data'
 # define data paths
 products_path = '/product_metadata_dashboard.pkl'
 top_10_products_path = '/top_10_products.pkl'
-#product_recs_orig_path = 
-#user_recs_orig_path = 
+product_recs_orig_path = '/dnn_autoencoder_20_predictions.pkl'
+user_recs_orig_path = '/dnn_user_prod_dense_20_predictions.pkl'
 product_recs_path = '/product_recommendations.pkl'
 user_recs_path = '/user_recommendations.pkl'
 

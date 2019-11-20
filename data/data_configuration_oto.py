@@ -125,7 +125,7 @@ print('Script: 01.03.01 [Add relevant metadata to product predictions] completed
 # =============================================================================
 product_recs_enhanced["Rank Order"] = product_recs_enhanced.groupby('Original Product Id')["Predicted Rating"].rank("dense", ascending=False)
 
-# have to sort values so thank rank 1 is first for each product
+# have to sort values so that rank 1 is first for each product
 product_recs_enhanced = product_recs_enhanced.sort_values(by=['Original Product Id','Rank Order'], ascending=True)
 
 product_recs_enhanced = product_recs_enhanced.drop('Predicted Rating', axis=1)
@@ -179,9 +179,11 @@ print('Script: 01.04.01 [Add relevant metadata to user predictions] completed')
 # =============================================================================
 # 01.04.02| Transform Rank Order Column
 # =============================================================================
-user_recs_enhanced["Rank Order"] = user_recs_enhanced.groupby('Reviewer Id')["Predicted Rating"].rank("dense", ascending=False)
+# this code doesn't work here b/c the predictions are the same so it assigns a rating of 1 to everything
+# set method to "first" from "dense" and it works
+user_recs_enhanced["Rank Order"] = user_recs_enhanced.groupby('Reviewer Id')["Predicted Rating"].rank("first", ascending=False)
 
-# have to sort values so thank rank 1 is first for each reviewer
+# have to sort values so that rank 1 is first for each reviewer
 user_recs_enhanced = user_recs_enhanced.sort_values(by=['Reviewer Id','Rank Order'], ascending=True)
 
 user_recs_enhanced = user_recs_enhanced.drop('Predicted Rating', axis=1)
